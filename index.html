@@ -10,12 +10,12 @@
 
 <body>
     <div id="buttons-view"></div>
-    <div id="gifs-appear-here">here: </div>
     <form id="tv-form">
         <label for="tv-input">Add a show!</label>
         <input type="text" id="tv-input"><br>
         <input id="add-show" type="submit" value="Add a show!">
     </form>
+    <div id="gifs-appear-here"></div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script type="text/javascript">
@@ -28,20 +28,15 @@
                 var a = $("<button>");
                 a.attr("data-name", shows[i]);
                 a.text(shows[i]);
+                a.addClass("showBtn");
                 $("#buttons-view").append(a);
             }
         }
 
         renderButtons();
+        
 
-        $("#add-show").on("click", function(event){
-            event.preventDefault();
-            var newShow = $("#tv-input").val().trim();
-            shows.push(newShow);
-            renderButtons();
-        });
-
-        $("button").on("click", function () {
+        $(document).on("click", ".showBtn", function () {
             var show = $(this).attr("data-name")
             var queryURL = "https://api.giphy.com/v1/gifs/search?api_key=13730LadNMgYL9mtvwPBp4OlPk7q0yGN&q=" + show + "&limit=10&offset=0&rating=G&lang=en";
 
@@ -82,7 +77,14 @@
                 $(this).attr("data-state", "still");
             }
         });
-
+        $("#add-show").on("click", function(event){
+            event.preventDefault();
+            var newShow = $("#tv-input").val();
+            console.log(newShow);
+            shows.push(newShow);
+            console.log(shows);
+            renderButtons();
+        });
     </script>
 
 </body>
