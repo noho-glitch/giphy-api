@@ -9,10 +9,43 @@
 </head>
 
 <body>
+        <div id="gifs-appear-here"> </div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script type="text/javascript">
     
-    
+    $("button").on("click", function(){
+
+        var show = $(this).attr("tvshow")
+
+        var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + show + "&api_key=13730LadNMgYL9mtvwPBp4OlPk7q0yGN";
+
+        $.ajax({
+            url: queryURL,
+            method: "GET"
+        })
+
+            .then(function(response){
+
+                var results = response.data;
+
+                for (var i = 0; i < results.length; i++) {
+
+                    var showDiv = $("<div>");
+                    
+                    var rating = $("<p>").text("Rating: " + results[i].rating);
+
+                    var showImage = $("<img>");
+
+                    showImage.attr("src", results[i].images.fixed_height.url);
+
+                    showDiv.append(p);
+                    showDiv.append(showImage);
+
+                    $("#gifs-appear-here").prepend(showDiv);
+                }
+            })
+    })
 
     </script>
 
