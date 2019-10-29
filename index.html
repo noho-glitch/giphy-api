@@ -9,7 +9,8 @@
 </head>
 
 <body>
-        <div id="gifs-appear-here"> </div>
+        <button tvshow="arrested development">arrested development</button>
+        <div id="gifs-appear-here">here: </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script type="text/javascript">
@@ -18,14 +19,16 @@
 
         var show = $(this).attr("tvshow")
 
-        var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + show + "&api_key=13730LadNMgYL9mtvwPBp4OlPk7q0yGN";
+        var queryURL = "https://api.giphy.com/v1/gifs/search?api_key=13730LadNMgYL9mtvwPBp4OlPk7q0yGN&q=" + show + "&limit=10&offset=0&rating=G&lang=en";
 
         $.ajax({
             url: queryURL,
             method: "GET"
         })
-
+            
             .then(function(response){
+                console.log(queryURL);
+                console.log(response);
 
                 var results = response.data;
 
@@ -39,7 +42,7 @@
 
                     showImage.attr("src", results[i].images.fixed_height.url);
 
-                    showDiv.append(p);
+                    showDiv.append(rating);
                     showDiv.append(showImage);
 
                     $("#gifs-appear-here").prepend(showDiv);
