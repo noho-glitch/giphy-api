@@ -9,46 +9,79 @@
 </head>
 
 <body>
-        <button tvshow="arrested development">arrested development</button>
-        <div id="gifs-appear-here">here: </div>
+    <div id="buttons-view"></div>
+    <div id="gifs-appear-here">here: </div>
+    <form id="tv-form">
+        <label for="tv-input">Add a show!</label>
+        <input type="text" id="tv-input"><br>
+        <input id="add-show" type="submit" value="Add a show!">
+    </form>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script type="text/javascript">
-    
-    $("button").on("click", function(){
 
-        var show = $(this).attr("tvshow")
+        var shows = ["Archer", "Arrested Development", "Game of Thrones", "Community"];
 
-        var queryURL = "https://api.giphy.com/v1/gifs/search?api_key=13730LadNMgYL9mtvwPBp4OlPk7q0yGN&q=" + show + "&limit=10&offset=0&rating=G&lang=en";
+        function renderButtons() {
+            $("#buttons-view").empty();
+            for (var i = 0; i < shows.length; i++) {
+                var a = $("<button>");
+                a.attr("data-name", shows[i]);
+                a.text(shows[i]);
+                $("#buttons-view").append(a);
+            }
+        }
 
-        $.ajax({
-            url: queryURL,
-            method: "GET"
-        })
-            
-            .then(function(response){
-                console.log(queryURL);
-                console.log(response);
+        renderButtons();
 
-                var results = response.data;
+        $("#add-show").on("click", function(event){
+            event.preventDefault();
+            var newShow = $("#tv-input").val().trim();
+            shows.push(newShow);
+            renderButtons();
+        });
 
-                for (var i = 0; i < results.length; i++) {
+        $("button").on("click", function () {
+            var show = $(this).attr("data-name")
+            var queryURL = "https://api.giphy.com/v1/gifs/search?api_key=13730LadNMgYL9mtvwPBp4OlPk7q0yGN&q=" + show + "&limit=10&offset=0&rating=G&lang=en";
 
-                    var showDiv = $("<div>");
-                    
-                    var rating = $("<p>").text("Rating: " + results[i].rating);
-
-                    var showImage = $("<img>");
-
-                    showImage.attr("src", results[i].images.fixed_height.url);
-
-                    showDiv.append(rating);
-                    showDiv.append(showImage);
-
-                    $("#gifs-appear-here").prepend(showDiv);
-                }
+            $.ajax({
+                url: queryURL,
+                method: "GET"
             })
-    })
+
+                .then(function (response) {
+                    console.log(queryURL);
+                    console.log(response);
+
+                    var results = response.data;
+
+                    for (var i = 0; i < results.length; i++) {
+                        var showDiv = $("<div>");
+                        var rating = $("<p>").text("Rating: " + results[i].rating);
+                        var showImage = $("<img>");
+                        showImage.attr("src", results[i].images.fixed_height_still.url);
+                        showImage.attr("data-still", results[i].images.fixed_height_still.url);
+                        showImage.attr("data-animate", results[i].images.fixed_height.url);
+                        showImage.addClass("gif");
+                        showDiv.append(rating);
+                        showDiv.append(showImage);
+
+                        $("#gifs-appear-here").prepend(showDiv);
+                    }
+                })
+        })
+
+        $(document).on("click", ".gif", function () {
+            var state = $(this).attr("data-state");
+            if (state === "still") {
+                $(this).attr("src", $(this).attr("data-animate"));
+                $(this).attr("data-state", "animate");
+            } else {
+                $(this).attr("src", $(this).attr("data-still"));
+                $(this).attr("data-state", "still");
+            }
+        });
 
     </script>
 
